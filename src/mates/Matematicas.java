@@ -1,6 +1,9 @@
 package mates;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class Matematicas {
 
@@ -11,37 +14,25 @@ public class Matematicas {
      * @param pasos El número de pasos para generar puntos.
      * @return Una aproximación del número Pi.
      */
-    public static double generarPiRecursivamente(long pasos) {
-        // Se llama al método ade ayuda para generar la aproximación recursivamente
-        Random rand = new Random(); // Se crea una instancia de Random
-        return generarPiRecursivamenteWorker(pasos, pasos, 0, rand);
-    }
-    
-    /**
-     * Método auxiliar que genera recursivamente una aproximación de Pi mediante el método de Montecarlo.
-     * 
-     * @param pasos El número total de pasos.
-     * @param remainingPasos El número de pasos restantes en la recursión.
-     * @param puntosDentroCirculo El número de puntos dentro del círculo.
-     * @param rand La instancia de Random para generar números aleatorios.
-     * @return Una aproximación del número Pi.
-     */
-    private static double generarPiRecursivamenteWorker(long pasos, long remainingPasos, int puntosDentroCirculo, Random rand) {
-        // Si no quedan pasos restantes, se calcula la aproximación de Pi y se devuelve
-        if (remainingPasos == 0) {
-            return 4.0 * ((double) puntosDentroCirculo / pasos);
-        }
-    
-        // Se generan coordenadas aleatorias x e y
-        double x = rand.nextDouble();
-        double y = rand.nextDouble();
-    
-        // Si el punto está dentro del círculo, se incrementa el contador de puntos dentro del círculo
-        if (x * x + y * y <= 1) {
-            puntosDentroCirculo++;
-        }
-    
-        // Se realiza una llamada recursiva con un paso menos
-        return generarPiRecursivamenteWorker(pasos, remainingPasos - 1, puntosDentroCirculo, rand);
+    public static double generarPiParalelamente(long pasos) {
+        Random rand = new Random();
+        
+        // Generate random points in parallel
+        List<Boolean> pointsInCircle = LongStream.range(0, pasos)
+                .parallel() // Perform in parallel
+                .mapToObj(i -> {
+                    double x = rand.nextDouble();
+                    double y = rand.nextDouble();
+                    return x * x + y * y <= 1;
+                })
+                .collect(Collectors.toList());
+
+        // Count points inside the circle
+        long puntosDentroCirculo = pointsInCircle.stream()
+                .filter(isInside -> isInside)
+                .count();
+
+        // Calculate Pi approximation
+        return 4.0 * ((double) puntosDentroCirculo / pasos);
     }
 }
