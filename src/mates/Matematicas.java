@@ -1,8 +1,6 @@
 package mates;
 
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.LongStream;
 
 public class Matematicas {
@@ -15,24 +13,19 @@ public class Matematicas {
      * @return Una aproximación del número Pi.
      */
     public static double generarPiParalelamente(long pasos) {
-        Random rand = new Random();
-        
-        // Generate random points in parallel
-        List<Boolean> pointsInCircle = LongStream.range(0, pasos)
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+
+        // Generate random points in parallel and count points inside the circle
+        long puntosDentroCirculo = LongStream.range(0, pasos)
                 .parallel() // Perform in parallel
-                .mapToObj(i -> {
+                .map(i -> {
                     double x = rand.nextDouble();
                     double y = rand.nextDouble();
-                    return x * x + y * y <= 1;
+                    return (x * x + y * y <= 1) ? 1 : 0;
                 })
-                .collect(Collectors.toList());
-
-        // Count points inside the circle
-        long puntosDentroCirculo = pointsInCircle.stream()
-                .filter(isInside -> isInside)
-                .count();
+                .sum();
 
         // Calculate Pi approximation
-        return 4.0 * ((double) puntosDentroCirculo / pasos);
+        return 4.0 * (puntosDentroCirculo / (double) pasos);
     }
 }
