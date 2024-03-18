@@ -15,7 +15,7 @@ Abre la terminal en tu computadora:
 Luego, clona el repositorio usando el siguiente comando:
 
 ```bash
-git clone 'https://github.com/Salchikiller/-Practica_1.git'
+git clone 'https://github.com/Salchikiller/Practica_3'
 ```
 
 
@@ -25,7 +25,7 @@ git clone 'https://github.com/Salchikiller/-Practica_1.git'
 Una vez clonado el repositorio, navega al directorio donde se encuentra:
 
 ```bash
-cd practica-1-para-alumnos
+cd Practica_3
 ```
 
 ### 3. Limpiar Archivos Previamente Compilados
