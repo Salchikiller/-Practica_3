@@ -3,6 +3,9 @@ package mates;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.LongStream;
 
+/**
+ * La clase Matematicas proporciona métodos para realizar cálculos matemáticos.
+ */
 public class Matematicas {
 
     /**
@@ -13,19 +16,22 @@ public class Matematicas {
      * @return Una aproximación del número Pi.
      */
     public static double generarPiParalelamente(long pasos) {
+        // Se obtiene una instancia de ThreadLocalRandom para generar números aleatorios seguros en entornos concurrentes
         ThreadLocalRandom rand = ThreadLocalRandom.current();
 
-        // Generate random points in parallel and count points inside the circle
+        // Genera puntos aleatorios en paralelo y cuenta los puntos dentro del círculo
         long puntosDentroCirculo = LongStream.range(0, pasos)
-                .parallel() // Perform in parallel
+                .parallel() // Realiza en paralelo
                 .map(i -> {
+                    // Genera coordenadas (x, y) aleatorias dentro del cuadrado unitario
                     double x = rand.nextDouble();
                     double y = rand.nextDouble();
+                    // Comprueba si el punto está dentro del círculo unitario
                     return (x * x + y * y <= 1) ? 1 : 0;
                 })
                 .sum();
 
-        // Calculate Pi approximation
+        // Calcula la aproximación de Pi
         return 4.0 * (puntosDentroCirculo / (double) pasos);
     }
 }
